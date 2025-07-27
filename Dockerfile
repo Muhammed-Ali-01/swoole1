@@ -19,14 +19,11 @@ RUN apt-get install -y \
     build-essential \
     autoconf 
 
-RUN cd /tmp && \
-    git clone https://github.com/swoole/swoole-src.git && \
-    cd swoole-src && \
-    phpize && \
-    ./configure --enable-openssl --enable-http2 --enable-swoole-curl --enable-swoole-json && \
-    make && \
-    make install && \
-    docker-php-ext-enable swoole
+# Install Swoole from PECL (recommended way)
+RUN pecl install swoole && docker-php-ext-enable swoole
+
+# Verify Swoole installation
+RUN php -m | grep swoole
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
